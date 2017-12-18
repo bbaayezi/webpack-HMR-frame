@@ -4,6 +4,11 @@ const merge = require('webpack-merge');
 const common = require('./webpack.common');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const uglifyJSPlugin = new UglifyJSPlugin();
+// Extra text plugin
+var ExtraTextPlugin = require('extract-text-webpack-plugin');
+// Extra html
+var HTMLWebpackPlugin = require('html-webpack-plugin');
+
 const babelOptions = {
     "presets": [
         ["env", {
@@ -25,12 +30,32 @@ module.exports = merge(common, {
                         options: babelOptions
                     }
                 ]
+            },
+            {
+                test: /\.scss$/,
+                use: ExtraTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: 'css-loader!sass-loader'
+                })
+            },
+            {
+                test: /\.css$/,
+                use: ExtraTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: 'css-loader'
+                })
             }
         ]
     },
     devtool: 'cheap-module-source-map',
     plugins: [
-        uglifyJSPlugin
+        uglifyJSPlugin,
+        new ExtraTextPlugin('style.css'),
+        new HTMLWebpackPlugin({
+            filename: 'index.html',
+            inject: 'body',
+            template: './src/index.html'
+        })
     ],
     output: {
         path: path.resolve('dist'),

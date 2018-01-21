@@ -11,8 +11,8 @@ module.exports = merge(common, {
                 loader: 'babel-loader'
             },
             {
-                test: /\.scss$/,
-                loaders: ['style-loader', 'css-loader', 'sass-loader']
+                test: /\.ccss$/,
+                loaders: ['style-loader', 'css-loader']
             }
         ]
     },
